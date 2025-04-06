@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Удалить пользователя{% endblock %}
+{% block content %}
+<h1>Вы уверены, что хотите удалить пользователя {{ user.username }}?</h1>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Удалить</button>
+</form>
+{% endblock %}
