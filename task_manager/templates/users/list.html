@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
+
 {% block title %}Пользователи{% endblock %}
+
 {% block content %}
-<h1>Пользователи</h1>
+<h1 class="my-4">Пользователи</h1>
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -18,8 +21,8 @@
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>
-          <a href="{% url 'user_update' user.id %}">Редактировать</a> |
-          <a href="{% url 'user_delete' user.id %}">Удалить</a>
+          <a href="{% url 'users:user_update' user.id %}" class="btn btn-outline-primary btn-sm">Редактировать</a>
+          <a href="{% url 'users:user_delete' user.id %}" class="btn btn-outline-danger btn-sm">Удалить</a>
         </td>
       </tr>
     {% endfor %}

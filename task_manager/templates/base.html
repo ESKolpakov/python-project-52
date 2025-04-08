@@ -1,54 +1,48 @@
 {% load django_bootstrap5 %}
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <title>{% block title %}Task Manager{% endblock %}</title>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Менеджер задач{% endblock %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-  </head>
-  <body class="d-flex flex-column min-vh-100">
-    <header class="mb-4 border-bottom shadow-sm">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light container">
-        <a class="navbar-brand" href="{% url 'home' %}">Менеджер задач</a>
-        <div class="collapse navbar-collapse">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users_list' %}">Пользователи</a>
-            </li>
-          </ul>
-          <ul class="navbar-nav">
-            {% if user.is_authenticated %}
-              <li class="nav-item">
-                <span class="nav-link">Привет, {{ user.username }}</span>
-              </li>
-              <li class="nav-item">
-                <form method="post" action="{% url 'logout' %}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-link nav-link">Выход</button>
-                </form>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' %}">Вход</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'user_create' %}">Регистрация</a>
-              </li>
-            {% endif %}
-          </ul>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">Task Manager</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:users_list' %}">Пользователи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'statuses:status_list' %}">Статусы</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-danger" type="submit">Выйти</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-      </nav>
-    </header>
+    </nav>
 
-    <main class="container flex-grow-1">
-      {% block content %}{% endblock %}
-    </main>
-
-    <footer class="border-top py-3 mt-5 bg-light">
-      <div class="container">
-        <a target="_blank" href="https://ru.hexlet.io">Hexlet</a>
-      </div>
-    </footer>
-  </body>
+    <div class="container">
+        {% bootstrap_messages %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
 </html>
