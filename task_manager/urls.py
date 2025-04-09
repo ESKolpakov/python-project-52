@@ -23,20 +23,9 @@ from task_manager.views import index
 urlpatterns = [
     path('', index, name='home'),
     path('admin/', admin.site.urls),
-    path(
-        'statuses/',
-        include('task_manager.statuses.urls', namespace='statuses')
-        ),
-    path(
-        'login/',
-        LoginView.as_view(template_name='login.html'),
-        name='login'
-    ),
-    path(
-        'logout/',
-        LogoutView.as_view(next_page='home'),
-        name='logout'
-    ),
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
     path('users/', include('task_manager.users.urls', namespace='users')),
-
+    path('statuses/', include('task_manager.statuses.urls', namespace='statuses')),
+    path('tasks/', include('task_manager.tasks.urls', namespace='tasks')),
 ]
