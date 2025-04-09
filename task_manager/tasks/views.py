@@ -1,4 +1,3 @@
-# task_manager/tasks/views.py
 from django.contrib.auth.mixins import (
     LoginRequiredMixin, UserPassesTestMixin
 )
@@ -14,6 +13,7 @@ from .forms import TaskForm
 from .filters import TaskFilter
 
 
+# Список задач с фильтрацией
 class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = 'tasks/list.html'
@@ -21,6 +21,7 @@ class TaskListView(LoginRequiredMixin, FilterView):
     filterset_class = TaskFilter
 
 
+# Создание задачи
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskForm
@@ -35,7 +36,10 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
-class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+# Обновление задачи
+class TaskUpdateView(
+    LoginRequiredMixin, UserPassesTestMixin, UpdateView
+):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update.html'
@@ -51,7 +55,10 @@ class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return True
 
 
-class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+# Удаление задачи (только автор)
+class TaskDeleteView(
+    LoginRequiredMixin, UserPassesTestMixin, DeleteView
+):
     model = Task
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks:task_list')
@@ -67,6 +74,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
+# Детали задачи
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = 'tasks/detail.html'

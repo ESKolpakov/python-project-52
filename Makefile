@@ -15,3 +15,9 @@ build:
 
 lint:
 	flake8 .
+
+format:
+	black .
+
+check:
+	flake8 . && black --check . && isort --check-only .
