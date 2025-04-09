@@ -3,7 +3,40 @@
 
 {% block content %}
 <h1 class="my-4">Задачи</h1>
-<a class="btn btn-primary mb-3" href="{% url 'tasks:task_create' %}">Создать задачу</a>
+
+<a class="btn btn-primary mb-3" 
+   href="{% url 'tasks:task_create' %}">
+    Создать задачу
+</a>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col">
+            {{ filter.form.status.label_tag }}
+            {{ filter.form.status }}
+        </div>
+        <div class="col">
+            {{ filter.form.executor.label_tag }}
+            {{ filter.form.executor }}
+        </div>
+        <div class="col">
+            {{ filter.form.label.label_tag }}
+            {{ filter.form.label }}
+        </div>
+        <div class="col d-flex align-items-end">
+            <div class="form-check">
+                {{ filter.form.self_tasks }}
+                {{ filter.form.self_tasks.label_tag }}
+            </div>
+        </div>
+        <div class="col d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">
+                Показать
+            </button>
+        </div>
+    </div>
+</form>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -20,14 +53,24 @@
         {% for task in tasks %}
         <tr>
             <td>{{ task.id }}</td>
-            <td><a href="{% url 'tasks:task_detail' task.pk %}">{{ task.name }}</a></td>
+            <td>
+                <a href="{% url 'tasks:task_detail' task.pk %}">
+                    {{ task.name }}
+                </a>
+            </td>
             <td>{{ task.status }}</td>
             <td>{{ task.author }}</td>
             <td>{{ task.executor|default:"—" }}</td>
             <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
             <td>
-                <a class="btn btn-outline-primary btn-sm" href="{% url 'tasks:task_update' task.pk %}">Изменить</a>
-                <a class="btn btn-outline-danger btn-sm" href="{% url 'tasks:task_delete' task.pk %}">Удалить</a>
+                <a class="btn btn-outline-primary btn-sm" 
+                   href="{% url 'tasks:task_update' task.pk %}">
+                    Изменить
+                </a>
+                <a class="btn btn-outline-danger btn-sm" 
+                   href="{% url 'tasks:task_delete' task.pk %}">
+                    Удалить
+                </a>
             </td>
         </tr>
         {% endfor %}
