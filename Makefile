@@ -19,5 +19,14 @@ lint:
 format:
 	black .
 
+lint-isort:
+	isort .
+
+check-black:
+	black --check .
+
+check-isort:
+	isort --check .
+
 check:
 	flake8 . && black --check . && isort --check-only .

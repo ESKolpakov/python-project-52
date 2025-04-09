@@ -14,22 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 # task_manager/urls.py
 from django.contrib import admin
-from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
-from task_manager.views import index
+from django.urls import include, path
+
 from task_manager.rollbar_test_view import trigger_error
+from task_manager.views import index
 
 urlpatterns = [
-    path('', index, name='home'),
-    path('admin/', admin.site.urls),
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
-    path('users/', include('task_manager.users.urls', namespace='users')),
-    path('statuses/', include('task_manager.statuses.urls', namespace='statuses')),
-    path('tasks/', include('task_manager.tasks.urls', namespace='tasks')),
-    path('labels/', include('task_manager.labels.urls', namespace='labels')),
-    path('trigger-error/', trigger_error, name='trigger_error'),
+    path("", index, name="home"),
+    path("admin/", admin.site.urls),
+    path("login/", LoginView.as_view(template_name="login.html"), name="login"),
+    path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
+    path("users/", include("task_manager.users.urls", namespace="users")),
+    path("statuses/", include("task_manager.statuses.urls", namespace="statuses")),
+    path("tasks/", include("task_manager.tasks.urls", namespace="tasks")),
+    path("labels/", include("task_manager.labels.urls", namespace="labels")),
+    path("trigger-error/", trigger_error, name="trigger_error"),
 ]
-
