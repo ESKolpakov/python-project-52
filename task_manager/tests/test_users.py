@@ -5,7 +5,9 @@ from django.urls import reverse
 
 class UserTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="john", password="password123")
+        self.user = User.objects.create_user(
+            username="john", password="password123"
+        )
         self.other_user = User.objects.create_user(
             username="jane", password="password456"
         )
@@ -56,7 +58,9 @@ class UserTestCase(TestCase):
 
     def test_user_delete_self(self):
         self.client.login(username="john", password="password123")
-        response = self.client.post(reverse("users:user_delete", args=[self.user.pk]))
+        response = self.client.post(
+            reverse("users:user_delete", args=[self.user.pk])
+        )
         self.assertRedirects(response, reverse("users:users_list"))
         self.assertFalse(User.objects.filter(username="john").exists())
 

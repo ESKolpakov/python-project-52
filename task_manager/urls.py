@@ -29,7 +29,9 @@ urlpatterns = [
     path("login/", LoginView.as_view(template_name="login.html"), name="login"),
     path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
     path("users/", include("task_manager.users.urls", namespace="users")),
-    path("statuses/", include("task_manager.statuses.urls", namespace="statuses")),
+    path(
+        "statuses/", include("task_manager.statuses.urls", namespace="statuses")
+    ),
     path("tasks/", include("task_manager.tasks.urls", namespace="tasks")),
     path("labels/", include("task_manager.labels.urls", namespace="labels")),
     path("trigger-error/", trigger_error, name="trigger_error"),

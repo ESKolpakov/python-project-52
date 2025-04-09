@@ -10,7 +10,9 @@ from task_manager.tasks.models import Task
 
 class LabelTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="tester", password="pass123")
+        self.user = User.objects.create_user(
+            username="tester", password="pass123"
+        )
         self.client.login(username="tester", password="pass123")
         self.label = Label.objects.create(name="Bug")
 
@@ -20,7 +22,9 @@ class LabelTestCase(TestCase):
         self.assertContains(response, "Bug")
 
     def test_label_create(self):
-        response = self.client.post(reverse("labels:label_create"), {"name": "Feature"})
+        response = self.client.post(
+            reverse("labels:label_create"), {"name": "Feature"}
+        )
         self.assertRedirects(response, reverse("labels:label_list"))
         self.assertTrue(Label.objects.filter(name="Feature").exists())
 
@@ -43,7 +47,10 @@ class LabelTestCase(TestCase):
     def test_protected_label_delete(self):
         status = Status.objects.create(name="Open")
         task = Task.objects.create(
-            name="Fix bug", description="Fix this asap", status=status, author=self.user
+            name="Fix bug",
+            description="Fix this asap",
+            status=status,
+            author=self.user,
         )
         task.labels.add(self.label)
 

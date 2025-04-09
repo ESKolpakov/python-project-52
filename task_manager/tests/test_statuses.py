@@ -7,13 +7,16 @@ from task_manager.statuses.models import Status
 
 class StatusTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="pass123456")
+        self.user = User.objects.create_user(
+            username="testuser", password="pass123456"
+        )
         self.status = Status.objects.create(name="In Progress")
 
     def test_status_list_requires_login(self):
         response = self.client.get(reverse("statuses:status_list"))
         self.assertRedirects(
-            response, f"{reverse('login')}?next={reverse('statuses:status_list')}"
+            response,
+            f"{reverse('login')}?next={reverse('statuses:status_list')}",
         )
 
     def test_status_list_view_authenticated(self):

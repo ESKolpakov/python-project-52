@@ -10,8 +10,12 @@ from task_manager.tasks.models import Task
 
 class TaskFilterTests(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username="user1", password="pass1")
-        self.user2 = User.objects.create_user(username="user2", password="pass2")
+        self.user1 = User.objects.create_user(
+            username="user1", password="pass1"
+        )
+        self.user2 = User.objects.create_user(
+            username="user2", password="pass2"
+        )
 
         self.status = Status.objects.create(name="In Progress")
         self.label = Label.objects.create(name="Bug")
@@ -48,11 +52,15 @@ class TaskFilterTests(TestCase):
         self.assertNotContains(response, "Task Two")
 
     def test_filter_by_label(self):
-        response = self.client.get(reverse("tasks:task_list"), {"label": self.label.pk})
+        response = self.client.get(
+            reverse("tasks:task_list"), {"label": self.label.pk}
+        )
         self.assertContains(response, "Task One")
         self.assertNotContains(response, "Task Two")
 
     def test_filter_by_own_tasks_only(self):
-        response = self.client.get(reverse("tasks:task_list"), {"self_tasks": "on"})
+        response = self.client.get(
+            reverse("tasks:task_list"), {"self_tasks": "on"}
+        )
         self.assertContains(response, "Task One")
         self.assertNotContains(response, "Task Two")

@@ -1,8 +1,12 @@
 # task_manager/labels/urls.py
 from django.urls import path
 
-from .views import (LabelCreateView, LabelDeleteView, LabelListView,
-                    LabelUpdateView)
+from .views import (
+    LabelCreateView,
+    LabelDeleteView,
+    LabelListView,
+    LabelUpdateView,
+)
 
 app_name = "labels"
 

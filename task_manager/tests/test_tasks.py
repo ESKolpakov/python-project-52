@@ -9,7 +9,9 @@ from task_manager.tasks.models import Task
 
 class TaskCRUDTests(TestCase):
     def setUp(self):
-        self.author = User.objects.create_user(username="author", password="testpass")
+        self.author = User.objects.create_user(
+            username="author", password="testpass"
+        )
         self.executor = User.objects.create_user(
             username="executor", password="testpass"
         )
@@ -61,18 +63,24 @@ class TaskCRUDTests(TestCase):
 
     def test_task_delete_by_author(self):
         self.client.login(username="author", password="testpass")
-        response = self.client.post(reverse("tasks:task_delete", args=[self.task.pk]))
+        response = self.client.post(
+            reverse("tasks:task_delete", args=[self.task.pk])
+        )
         self.assertRedirects(response, reverse("tasks:task_list"))
         self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())
 
     def test_task_delete_by_non_author_denied(self):
         self.client.login(username="other", password="testpass")
-        response = self.client.post(reverse("tasks:task_delete", args=[self.task.pk]))
+        response = self.client.post(
+            reverse("tasks:task_delete", args=[self.task.pk])
+        )
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Task.objects.filter(pk=self.task.pk).exists())
 
     def test_task_detail_view(self):
         self.client.login(username="author", password="testpass")
-        response = self.client.get(reverse("tasks:task_detail", args=[self.task.pk]))
+        response = self.client.get(
+            reverse("tasks:task_detail", args=[self.task.pk])
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Initial Task")
