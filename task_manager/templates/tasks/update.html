@@ -1,12 +1,15 @@
+{# task_manager/templates/tasks/update.html #}
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
-{% block title %}Изменить задачу{% endblock %}
+
+{% block title %}Обновление задачи{% endblock %}
 
 {% block content %}
-<h1 class="my-4">Изменить задачу</h1>
+<h1 class="my-4">Обновление задачи</h1>
+
 <form method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <button type="submit" class="btn btn-primary">Сохранить</button>
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 {% endblock %}

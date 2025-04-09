@@ -21,39 +21,45 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        response = super().form_valid(form)
+        form.instance.labels.set(form.cleaned_data['labels'])
         messages.success(self.request, 'Задача успешно создана')
-        return super().form_valid(form)
+        return response
 
 
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks:task_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Задача успешно изменена')
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        form.instance.labels.set(form.cleaned_data['labels'])
+        messages.success(self.request, 'Задача успешно обновлена')
+        return response
+
+    def test_func(self):
+        return True
 
 
 class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks:task_list')
+    raise_exception = True
 
     def test_func(self):
         task = self.get_object()
-        return self.request.user == task.author
-
-    def handle_no_permission(self):
-        messages.error(self.request, 'Удалить задачу может только её автор')
-        return super().handle_no_permission()
+        return task.author == self.request.user
 
     def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Задача успешно удалена')
+        self.object = self.get_object()
+        messages.success(request, 'Задача успешно удалена')
         return super().delete(request, *args, **kwargs)
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = 'tasks/detail.html'
+    context_object_name = 'task'
