@@ -30,3 +30,6 @@ check-isort:
 
 check:
 	flake8 . && black --check . && isort --check-only .
+
+setup:
+	@$(MAKE) install && $(MAKE) migrate && $(MAKE) collectstatic
