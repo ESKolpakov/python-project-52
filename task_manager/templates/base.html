@@ -4,31 +4,42 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Task Manager{% endblock %}</title>
+    <title>{% block title %}Менеджер задач{% endblock %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'index' %}">Task Manager</a>
-        <div class="collapse navbar-collapse">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'index' %}">Менеджер задач</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link" href="{% url 'users:list' %}">Пользователи</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'statuses:list' %}">Статусы</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'labels:list' %}">Метки</a></li>
+            {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'statuses:list' %}">Статусы</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'labels:list' %}">Метки</a></li>
+            {% endif %}
           </ul>
-          {% if user.is_authenticated %}
-            <span class="navbar-text">Привет, {{ user.username }}!</span>
-            <a class="btn btn-outline-secondary ms-2" href="{% url 'logout' %}">Выход</a>
-          {% else %}
-            <a class="btn btn-outline-primary" href="{% url 'login' %}">Вход</a>
-            <a class="btn btn-primary ms-2" href="{% url 'users:create' %}">Регистрация</a>
-          {% endif %}
+          <div class="d-flex">
+            {% if user.is_authenticated %}
+              <span class="navbar-text me-2">Привет, {{ user.username }}!</span>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-secondary" type="submit">Выход</button>
+              </form>
+            {% else %}
+              <a class="btn btn-outline-primary me-2" href="{% url 'login' %}">Вход</a>
+              <a class="btn btn-primary" href="{% url 'users:create' %}">Регистрация</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </nav>
+
     <div class="container mt-3">
       {% if messages %}
         {% for message in messages %}
