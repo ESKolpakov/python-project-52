@@ -17,22 +17,29 @@ Including another URLconf
 
 # task_manager/urls.py
 from django.contrib import admin
-from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import include, path
-
-from task_manager.rollbar_test_view import trigger_error
+from django.urls import path, include
 from task_manager.views import index
 
 urlpatterns = [
-    path("", index, name="home"),
     path("admin/", admin.site.urls),
-    path("login/", LoginView.as_view(template_name="login.html"), name="login"),
-    path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
-    path("users/", include("task_manager.users.urls", namespace="users")),
+    path("auth/", include("django.contrib.auth.urls")),
+    path("", index, name="index"),
     path(
-        "statuses/", include("task_manager.statuses.urls", namespace="statuses")
+        "users/",
+        include(("task_manager.users.urls", "users"), namespace="users"),
     ),
-    path("tasks/", include("task_manager.tasks.urls", namespace="tasks")),
-    path("labels/", include("task_manager.labels.urls", namespace="labels")),
-    path("trigger-error/", trigger_error, name="trigger_error"),
+    path(
+        "tasks/",
+        include(("task_manager.tasks.urls", "tasks"), namespace="tasks"),
+    ),
+    path(
+        "statuses/",
+        include(
+            ("task_manager.statuses.urls", "statuses"), namespace="statuses"
+        ),
+    ),
+    path(
+        "labels/",
+        include(("task_manager.labels.urls", "labels"), namespace="labels"),
+    ),
 ]

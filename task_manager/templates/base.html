@@ -1,57 +1,43 @@
 {% load django_bootstrap5 %}
 <!DOCTYPE html>
 <html lang="ru">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Менеджер задач{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Manager{% endblock %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Task Manager</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:users_list' %}">Пользователи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'statuses:status_list' %}">Статусы</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tasks:task_list' %}">Задачи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'labels:label_list' %}">Метки</a>
-                        </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <form method="post" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button class="btn btn-outline-danger" type="submit">Выйти</button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:user_create' %}">Регистрация</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Войти</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">Task Manager</a>
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:list' %}">Пользователи</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'statuses:list' %}">Статусы</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'labels:list' %}">Метки</a></li>
+          </ul>
+          {% if user.is_authenticated %}
+            <span class="navbar-text">Привет, {{ user.username }}!</span>
+            <a class="btn btn-outline-secondary ms-2" href="{% url 'logout' %}">Выход</a>
+          {% else %}
+            <a class="btn btn-outline-primary" href="{% url 'login' %}">Вход</a>
+            <a class="btn btn-primary ms-2" href="{% url 'users:create' %}">Регистрация</a>
+          {% endif %}
         </div>
+      </div>
     </nav>
-
-    <div class="container">
-        {% bootstrap_messages %}
-        {% block content %}{% endblock %}
+    <div class="container mt-3">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
     </div>
-</body>
+  </body>
 </html>

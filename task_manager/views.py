@@ -1,9 +1,13 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, "index.html")
 
 
 class UserListView(ListView):
@@ -13,6 +17,7 @@ class UserListView(ListView):
 
 
 class UserCreateView(CreateView):
+    model = User
     form_class = UserCreationForm
     template_name = "users/create.html"
     success_url = reverse_lazy("login")
@@ -20,9 +25,9 @@ class UserCreateView(CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
-    form_class = UserCreationForm
+    form_class = UserChangeForm
     template_name = "users/update.html"
-    success_url = reverse_lazy("users_list")
+    success_url = reverse_lazy("users:list")
 
     def test_func(self):
         return self.request.user.pk == self.get_object().pk
@@ -31,11 +36,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = "users/delete.html"
-    success_url = reverse_lazy("users_list")
+    success_url = reverse_lazy("users:list")
 
     def test_func(self):
         return self.request.user.pk == self.get_object().pk
-
-
-def index(request):
-    return render(request, "index.html")

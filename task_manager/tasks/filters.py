@@ -1,45 +1,23 @@
-# task_manager/tasks/filters.py
 import django_filters
-from django import forms
-from django.contrib.auth.models import User
-
-from task_manager.labels.models import Label
-from task_manager.statuses.models import Status
-
 from .models import Task
 
 
 class TaskFilter(django_filters.FilterSet):
-    status = django_filters.ModelChoiceFilter(
-        queryset=Status.objects.all(),
-        label="Статус",
-        empty_label="Любой",
-        widget=forms.Select(attrs={"class": "form-select"}),
-    )
-    executor = django_filters.ModelChoiceFilter(
-        queryset=User.objects.all(),
-        label="Исполнитель",
-        empty_label="Любой",
-        widget=forms.Select(attrs={"class": "form-select"}),
-    )
-    label = django_filters.ModelChoiceFilter(
-        field_name="labels",
-        queryset=Label.objects.all(),
-        label="Метка",
-        empty_label="Любая",
-        widget=forms.Select(attrs={"class": "form-select"}),
-    )
+    status = django_filters.NumberFilter(field_name="status__id")
+    executor = django_filters.NumberFilter(field_name="executor__id")
+    label = django_filters.NumberFilter(method="filter_by_label")
     self_tasks = django_filters.BooleanFilter(
-        method="filter_by_author",
-        label="Только свои задачи",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        method="filter_self_tasks", label="Только мои задачи"
     )
 
     class Meta:
         model = Task
         fields = ["status", "executor", "label", "self_tasks"]
 
-    def filter_by_author(self, queryset, name, value):
-        if value:
+    def filter_by_label(self, queryset, name, value):
+        return queryset.filter(labels__id=value)
+
+    def filter_self_tasks(self, queryset, name, value):
+        if value and self.request and self.request.user.is_authenticated:
             return queryset.filter(author=self.request.user)
         return queryset

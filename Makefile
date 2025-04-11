@@ -32,4 +32,9 @@ check:
 	flake8 . && black --check . && isort --check-only .
 
 setup:
-	@$(MAKE) install && $(MAKE) migrate && $(MAKE) collectstatic
+	@$(MAKE) install && \
+	$(MAKE) migrate && \
+	$(MAKE) collectstatic
+
+tests:
+	python manage.py test

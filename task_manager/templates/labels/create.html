@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
-{% block title %}Создание метки{% endblock %}
+{% block title %}Создать метку{% endblock %}
 {% block content %}
-<h1 class="my-4">Создание метки</h1>
-<form method="post">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <button type="submit" class="btn btn-primary">Создать</button>
-</form>
+  <h1>Создать метку</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary">Создать метку</button>
+  </form>
 {% endblock %}

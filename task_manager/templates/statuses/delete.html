@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
-{% load django_bootstrap5 %}
-
 {% block title %}Удалить статус{% endblock %}
-
 {% block content %}
-<h1 class="my-4">Удалить статус</h1>
-<p>Вы уверены, что хотите удалить статус "{{ object.name }}"?</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-danger">Удалить</button>
-</form>
+  <h1>Удаление статуса</h1>
+  <p>Вы уверены, что хотите удалить статус "{{ object.name }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a href="{% url 'statuses:list' %}" class="btn btn-secondary">Отмена</a>
+  </form>
 {% endblock %}

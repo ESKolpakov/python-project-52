@@ -1,15 +1,11 @@
-{# task_manager/templates/tasks/create.html #}
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
-
-{% block title %}Создание задачи{% endblock %}
-
+{% block title %}Создать задачу{% endblock %}
 {% block content %}
-<h1 class="my-4">Создание задачи</h1>
-
-<form method="post">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <button type="submit" class="btn btn-primary">Создать</button>
-</form>
+  <h1>Создать задачу</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary">Создать задачу</button>
+  </form>
 {% endblock %}

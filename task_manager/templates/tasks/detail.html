@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}{{ task.name }}{% endblock %}
-
+{% block title %}Детали задачи{% endblock %}
 {% block content %}
-<h1 class="my-4">{{ task.name }}</h1>
-<p><strong>Описание:</strong> {{ task.description|default:"—" }}</p>
-<p><strong>Статус:</strong> {{ task.status }}</p>
-<p><strong>Автор:</strong> {{ task.author }}</p>
-<p><strong>Исполнитель:</strong> {{ task.executor|default:"—" }}</p>
-<p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
+  <h1>Детали задачи</h1>
+  <h3>{{ task.name }}</h3>
+  <p><strong>Описание:</strong> {{ task.description }}</p>
+  <p><strong>Автор:</strong> {{ task.author.username }}</p>
+  {% if task.executor %}
+    <p><strong>Исполнитель:</strong> {{ task.executor.username }}</p>
+  {% endif %}
+  {% if task.status %}
+    <p><strong>Статус:</strong> {{ task.status.name }}</p>
+  {% endif %}
+  {% if task.labels.all %}
+    <p><strong>Метки:</strong>
+      {% for label in task.labels.all %}
+        {{ label.name }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+  {% endif %}
+  <a href="{% url 'tasks:update' task.pk %}" class="btn btn-warning">Редактировать</a>
+  <a href="{% url 'tasks:delete' task.pk %}" class="btn btn-danger">Удалить</a>
+  <a href="{% url 'tasks:list' %}" class="btn btn-secondary">Назад</a>
 {% endblock %}

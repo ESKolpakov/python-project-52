@@ -1,11 +1,9 @@
-# task_manager/labels/views.py
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from .models import Label
+from .forms import LabelForm
 
 
 class LabelListView(LoginRequiredMixin, ListView):
@@ -16,9 +14,9 @@ class LabelListView(LoginRequiredMixin, ListView):
 
 class LabelCreateView(LoginRequiredMixin, CreateView):
     model = Label
-    fields = ["name"]
+    form_class = LabelForm
     template_name = "labels/create.html"
-    success_url = reverse_lazy("labels:label_list")
+    success_url = reverse_lazy("labels:list")
 
     def form_valid(self, form):
         messages.success(self.request, "Метка успешно создана")
@@ -27,9 +25,9 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
 
 class LabelUpdateView(LoginRequiredMixin, UpdateView):
     model = Label
-    fields = ["name"]
+    form_class = LabelForm
     template_name = "labels/update.html"
-    success_url = reverse_lazy("labels:label_list")
+    success_url = reverse_lazy("labels:list")
 
     def form_valid(self, form):
         messages.success(self.request, "Метка успешно обновлена")
@@ -39,15 +37,13 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
 class LabelDeleteView(LoginRequiredMixin, DeleteView):
     model = Label
     template_name = "labels/delete.html"
-    success_url = reverse_lazy("labels:label_list")
+    success_url = reverse_lazy("labels:list")
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.tasks.exists():
+    def delete(self, request, *args, **kwargs):
+        if self.get_object().tasks.exists():
             messages.error(
                 request, "Невозможно удалить метку, потому что она используется"
             )
-        else:
-            self.object.delete()
-            messages.success(request, "Метка успешно удалена")
-        return redirect(self.success_url)
+            return self.render_to_response(self.get_context_data())
+        messages.success(self.request, "Метка успешно удалена")
+        return super().delete(request, *args, **kwargs)

@@ -1,17 +1,16 @@
 import os
-import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
-import dj_database_url
-import dotenv
-
-dotenv.load_dotenv()
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "debug-secret")
-DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,webserver").split(",")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS", "127.0.0.1,localhost,webserver"
+).split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -20,11 +19,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "task_manager.users",
+    "task_manager.tasks",
+    "task_manager.statuses",
+    "task_manager.labels",
     "django_bootstrap5",
     "django_filters",
-    "task_manager.statuses",
-    "task_manager.tasks",
-    "task_manager.labels",
 ]
 
 MIDDLEWARE = [
@@ -43,7 +43,7 @@ ROOT_URLCONF = "task_manager.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "task_manager" / "templates"],
+        "DIRS": [os.path.join(BASE_DIR, "task_manager", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -59,47 +59,35 @@ TEMPLATES = [
 WSGI_APPLICATION = "task_manager.wsgi.application"
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-    )
-}
-
-if "test" in sys.argv:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db_test.sqlite3",
-        }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
 ]
 
-LANGUAGE_CODE = "en-us"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LANGUAGE_CODE = "ru"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+import rollbar
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-ROLLBAR = {
-    "access_token": os.getenv("ROLLBAR_TOKEN"),
-    "environment": "development" if DEBUG else "production",
-    "code_version": "1.0",
-    "root": BASE_DIR,
-}
+rollbar.init(
+    os.getenv("ROLLBAR_TOKEN", ""),
+    environment="production" if not DEBUG else "development",
+    root=str(BASE_DIR),
+)

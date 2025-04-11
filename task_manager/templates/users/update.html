@@ -1,10 +1,11 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
 {% block title %}Редактировать пользователя{% endblock %}
 {% block content %}
-<h1>Редактировать пользователя</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button class="btn btn-primary" type="submit">Сохранить</button>
-</form>
+  <h1>Редактировать пользователя</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary">Обновить пользователя</button>
+  </form>
 {% endblock %}

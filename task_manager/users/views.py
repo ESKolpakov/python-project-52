@@ -1,8 +1,9 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib import messages
+from django.contrib.auth.models import User
+from .forms import UserForm
 
 
 class UserListView(ListView):
@@ -12,25 +13,40 @@ class UserListView(ListView):
 
 
 class UserCreateView(CreateView):
-    form_class = UserCreationForm
-    template_name = "users/create.html"
-    success_url = reverse_lazy("login")
-
-
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
-    form_class = UserCreationForm
+    form_class = UserForm
+    template_name = "users/create.html"
+    success_url = reverse_lazy("users:list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Пользователь успешно зарегистрирован")
+        return super().form_valid(form)
+
+
+class UserUpdateView(UserPassesTestMixin, UpdateView):
+    model = User
+    form_class = UserForm
     template_name = "users/update.html"
-    success_url = reverse_lazy("users:users_list")
+    success_url = reverse_lazy("users:list")
 
     def test_func(self):
-        return self.request.user.pk == self.get_object().pk
+        # Разрешено редактировать только профиль самого пользователя.
+        return self.request.user == self.get_object()
+
+    def form_valid(self, form):
+        messages.success(self.request, "Пользователь успешно обновлён")
+        return super().form_valid(form)
 
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class UserDeleteView(UserPassesTestMixin, DeleteView):
     model = User
     template_name = "users/delete.html"
-    success_url = reverse_lazy("users:users_list")
+    success_url = reverse_lazy("users:list")
 
     def test_func(self):
-        return self.request.user.pk == self.get_object().pk
+        # Разрешено удалять только профиль самого пользователя.
+        return self.request.user == self.get_object()
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Пользователь успешно удалён")
+        return super().delete(request, *args, **kwargs)
