@@ -18,14 +18,31 @@ Including another URLconf
 # task_manager/urls.py
 from django.contrib import admin
 from django.urls import include, path
+
 from task_manager.views import index
+from task_manager.users.views import CustomLoginView, CustomLogoutView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", index, name="index"),
-
-    path("users/", include(("task_manager.users.urls", "users"), namespace="users")),
-    path("tasks/", include(("task_manager.tasks.urls", "tasks"), namespace="tasks")),
-    path("statuses/", include(("task_manager.statuses.urls", "statuses"), namespace="statuses")),
-    path("labels/", include(("task_manager.labels.urls", "labels"), namespace="labels")),
+    path("login/", CustomLoginView.as_view(), name="login"),
+    path("logout/", CustomLogoutView.as_view(), name="logout"),
+    path(
+        "users/",
+        include(("task_manager.users.urls", "users"), namespace="users"),
+    ),
+    path(
+        "tasks/",
+        include(("task_manager.tasks.urls", "tasks"), namespace="tasks"),
+    ),
+    path(
+        "statuses/",
+        include(
+            ("task_manager.statuses.urls", "statuses"), namespace="statuses"
+        ),
+    ),
+    path(
+        "labels/",
+        include(("task_manager.labels.urls", "labels"), namespace="labels"),
+    ),
 ]

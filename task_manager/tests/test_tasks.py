@@ -11,9 +11,7 @@ class TaskTests(TestCase):
         self.author = User.objects.create_user(
             username="author", password="pass"
         )
-        self.other = User.objects.create_user(
-            username="other", password="pass"
-        )
+        self.other = User.objects.create_user(username="other", password="pass")
         self.status = Status.objects.create(name="In Progress")
         self.label = Label.objects.create(name="Bug")
 
@@ -43,8 +41,7 @@ class TaskTests(TestCase):
     def test_author_can_delete_task(self):
         self.client.force_login(self.author)
         response = self.client.post(
-            reverse("tasks:tasks_delete", args=[self.task.pk]),
-            follow=True
+            reverse("tasks:tasks_delete", args=[self.task.pk]), follow=True
         )
         self.assertRedirects(response, reverse("tasks:tasks_list"))
         self.assertContains(response, "Задача успешно удалена")
@@ -52,8 +49,7 @@ class TaskTests(TestCase):
     def test_non_author_cannot_delete_task(self):
         self.client.force_login(self.other)
         response = self.client.post(
-            reverse("tasks:tasks_delete", args=[self.task.pk]),
-            follow=True
+            reverse("tasks:tasks_delete", args=[self.task.pk]), follow=True
         )
         self.assertRedirects(response, reverse("tasks:tasks_list"))
         self.assertContains(response, "Задачу может удалить только её автор")

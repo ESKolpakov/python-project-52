@@ -36,9 +36,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("users:login")
-        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
         return redirect("users:users_list")
 
     def form_valid(self, form):
@@ -56,9 +60,13 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("users:login")
-        messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для удаления другого пользователя."
+        )
         return redirect("users:users_list")
 
     def delete(self, request, *args, **kwargs):
