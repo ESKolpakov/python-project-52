@@ -17,37 +17,38 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:list' %}">Пользователи</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:users_list' %}">Пользователи</a></li>
             {% if user.is_authenticated %}
-              <li class="nav-item"><a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'statuses:list' %}">Статусы</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'labels:list' %}">Метки</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'statuses:statuses_list' %}">Статусы</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'labels:labels_list' %}">Метки</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'tasks:tasks_list' %}">Задачи</a></li>
+              <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}" class="d-inline">
+                  {% csrf_token %}
+                  <button class="nav-link btn btn-link" type="submit">Выход</button>
+                </form>
+              </li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'users:users_create' %}">Регистрация</a></li>
             {% endif %}
           </ul>
-          <div class="d-flex">
-            {% if user.is_authenticated %}
-              <span class="navbar-text me-2">Привет, {{ user.username }}!</span>
-              <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button class="btn btn-outline-secondary" type="submit">Выход</button>
-              </form>
-            {% else %}
-              <a class="btn btn-outline-primary me-2" href="{% url 'login' %}">Вход</a>
-              <a class="btn btn-primary" href="{% url 'users:create' %}">Регистрация</a>
-            {% endif %}
-          </div>
         </div>
       </div>
     </nav>
 
     <div class="container mt-3">
       {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-info" role="alert">
-            {{ message }}
-          </div>
-        {% endfor %}
+        <div class="mt-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              <span class="fw-semibold">{{ message }}</span>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+            </div>
+          {% endfor %}
+        </div>
       {% endif %}
+
       {% block content %}{% endblock %}
     </div>
   </body>

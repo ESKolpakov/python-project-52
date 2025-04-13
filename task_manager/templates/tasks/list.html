@@ -1,13 +1,56 @@
 {% extends 'base.html' %}
-{% block title %}Список задач{% endblock %}
+{% block title %}Задачи{% endblock %}
+
 {% block content %}
   <h1>Задачи</h1>
+
+  <a href="{% url 'tasks:tasks_create' %}" class="btn btn-primary mb-3">Создать задачу</a>
+
+  <form method="get" class="mb-4">
+    <div class="mb-2">
+      <label for="id_status">Статус</label>
+      <select name="status" id="id_status" class="form-select">
+        <option value="">---------</option>
+        {% for status in statuses %}
+          <option value="{{ status.id }}" {% if request.GET.status == status.id|stringformat:"s" %}selected{% endif %}>{{ status.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-2">
+      <label for="id_executor">Исполнитель</label>
+      <select name="executor" id="id_executor" class="form-select">
+        <option value="">---------</option>
+        {% for user in executors %}
+          <option value="{{ user.id }}" {% if request.GET.executor == user.id|stringformat:"s" %}selected{% endif %}>{{ user.get_full_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-2">
+      <label for="id_label">Метка</label>
+      <select name="label" id="id_label" class="form-select">
+        <option value="">---------</option>
+        {% for label in labels %}
+          <option value="{{ label.id }}" {% if request.GET.label == label.id|stringformat:"s" %}selected{% endif %}>{{ label.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-check mb-2">
+      <input type="checkbox" name="only_my_tasks" id="id_only_my_tasks" class="form-check-input"
+             {% if request.GET.only_my_tasks %}checked{% endif %}>
+      <label class="form-check-label" for="id_only_my_tasks">Только свои задачи</label>
+    </div>
+    <button type="submit" class="btn btn-outline-primary">Показать</button>
+  </form>
+
   <table class="table table-striped">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Название</th>
+        <th>Имя</th>
+        <th>Статус</th>
         <th>Автор</th>
+        <th>Исполнитель</th>
+        <th>Дата создания</th>
         <th>Действия</th>
       </tr>
     </thead>
@@ -15,19 +58,21 @@
       {% for task in tasks %}
       <tr>
         <td>{{ task.id }}</td>
-        <td><a href="{% url 'tasks:detail' task.pk %}">{{ task.name }}</a></td>
-        <td>{{ task.author.username }}</td>
+        <td><a href="{% url 'tasks:tasks_detail' task.pk %}">{{ task.name }}</a></td>
+        <td>{{ task.status }}</td>
+        <td>{{ task.author.get_full_name }}</td>
+        <td>{{ task.executor.get_full_name }}</td>
+        <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'tasks:update' task.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-          <a href="{% url 'tasks:delete' task.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+          <a href="{% url 'tasks:tasks_update' task.pk %}">Изменить</a><br>
+          <a href="{% url 'tasks:tasks_delete' task.pk %}">Удалить</a>
         </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="4">Нет задач</td>
+        <td colspan="7">Нет задач</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a href="{% url 'tasks:create' %}" class="btn btn-primary">Создать задачу</a>
 {% endblock %}

@@ -1,31 +1,33 @@
-{% extends 'base.html' %}
-{% block title %}Список пользователей{% endblock %}
+{% extends "base.html" %}
 {% block content %}
-  <h1>Пользователи</h1>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Имя пользователя</th>
-        <th>Действия</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in users %}
-      <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.username }}</td>
-        <td>
-          <a href="{% url 'users:update' user.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-          <a href="{% url 'users:delete' user.pk %}" class="btn btn-sm btn-danger">Удалить</a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3">Нет пользователей</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <a href="{% url 'users:create' %}" class="btn btn-primary">Создать пользователя</a>
+<div class="container wrapper flex-grow-1">
+  <h1 class="my-4">Пользователи</h1>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Имя пользователя</th>
+          <th>Полное имя</th>
+          <th>Дата создания</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.get_full_name }}</td>
+            <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
+            <td>
+              <a href="{% url 'users:users_update' user.id %}">Изменить</a><br>
+              <a href="{% url 'users:users_update' user.id %}">Удалить</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

@@ -1,31 +1,31 @@
-{% extends 'base.html' %}
-{% block title %}Список меток{% endblock %}
+{% extends "base.html" %}
+{% block title %}Метки{% endblock %}
+
 {% block content %}
-  <h1>Метки</h1>
+  <h2>Метки</h2>
+  <a class="btn btn-primary my-3" href="{% url 'labels:labels_create' %}">Создать метку</a>
+
   <table class="table table-striped">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Название</th>
-        <th>Действия</th>
+        <th>Имя</th>
+        <th>Дата создания</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
-      {% for label in labels %}
-      <tr>
-        <td>{{ label.id }}</td>
-        <td>{{ label.name }}</td>
-        <td>
-          <a href="{% url 'labels:update' label.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-          <a href="{% url 'labels:delete' label.pk %}" class="btn btn-sm btn-danger">Удалить</a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3">Нет меток</td>
-      </tr>
+      {% for label in object_list %}
+        <tr>
+          <td>{{ label.id }}</td>
+          <td>{{ label.name }}</td>
+          <td>{{ label.created_at|date:"d.m.Y H:i" }}</td>
+          <td>
+            <a href="{% url 'labels:labels_update' label.id %}">Изменить</a><br>
+            <a href="{% url 'labels:labels_delete' label.id %}">Удалить</a>
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a href="{% url 'labels:create' %}" class="btn btn-primary">Создать метку</a>
 {% endblock %}

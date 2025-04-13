@@ -1,6 +1,9 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
+from django.contrib.auth.views import LogoutView
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import UserForm
@@ -16,37 +19,57 @@ class UserCreateView(CreateView):
     model = User
     form_class = UserForm
     template_name = "users/create.html"
-    success_url = reverse_lazy("users:list")
+    success_url = reverse_lazy("users:users_list")
 
     def form_valid(self, form):
         messages.success(self.request, "Пользователь успешно зарегистрирован")
         return super().form_valid(form)
 
 
-class UserUpdateView(UserPassesTestMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = UserForm
     template_name = "users/update.html"
-    success_url = reverse_lazy("users:list")
+    success_url = reverse_lazy("users:users_list")
 
     def test_func(self):
-        # Разрешено редактировать только профиль самого пользователя.
         return self.request.user == self.get_object()
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            return redirect("login")
+        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        return redirect("users:users_list")
 
     def form_valid(self, form):
         messages.success(self.request, "Пользователь успешно обновлён")
         return super().form_valid(form)
 
 
-class UserDeleteView(UserPassesTestMixin, DeleteView):
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = "users/delete.html"
-    success_url = reverse_lazy("users:list")
+    success_url = reverse_lazy("users:users_list")
 
     def test_func(self):
-        # Разрешено удалять только профиль самого пользователя.
         return self.request.user == self.get_object()
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            # Неавторизованный пользователь
+            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            return redirect("login")  # Или reverse_lazy('login')
+        # Авторизован, но не владелец профиля
+        messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
+        return redirect("users:users_list")
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Пользователь успешно удалён")
         return super().delete(request, *args, **kwargs)
+
+
+class CustomLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        messages.info(request, "Вы разлогинены")
+        return super().dispatch(request, *args, **kwargs)

@@ -1,7 +1,9 @@
-from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.contrib import messages
+
 from .models import Status
 from .forms import StatusForm
 
@@ -16,7 +18,7 @@ class StatusCreateView(LoginRequiredMixin, CreateView):
     model = Status
     form_class = StatusForm
     template_name = "statuses/create.html"
-    success_url = reverse_lazy("statuses:list")
+    success_url = reverse_lazy("statuses:statuses_list")
 
     def form_valid(self, form):
         messages.success(self.request, "Статус успешно создан")
@@ -27,18 +29,27 @@ class StatusUpdateView(LoginRequiredMixin, UpdateView):
     model = Status
     form_class = StatusForm
     template_name = "statuses/update.html"
-    success_url = reverse_lazy("statuses:list")
+    success_url = reverse_lazy("statuses:statuses_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Статус успешно обновлён")
+        messages.success(self.request, "Статус успешно изменён")
         return super().form_valid(form)
 
 
 class StatusDeleteView(LoginRequiredMixin, DeleteView):
     model = Status
     template_name = "statuses/delete.html"
-    success_url = reverse_lazy("statuses:list")
+    success_url = reverse_lazy("statuses:statuses_list")
+    context_object_name = "status"
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, "Статус успешно удалён")
-        return super().delete(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.tasks.exists():
+            messages.error(
+                request, "Невозможно удалить статус, потому что он используется"
+            )
+            return redirect(self.success_url)
+
+        messages.success(request, "Статус успешно удалён")
+        return super().post(request, *args, **kwargs)

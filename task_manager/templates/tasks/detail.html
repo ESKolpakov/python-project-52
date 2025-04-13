@@ -18,7 +18,7 @@
       {% endfor %}
     </p>
   {% endif %}
-  <a href="{% url 'tasks:update' task.pk %}" class="btn btn-warning">Редактировать</a>
-  <a href="{% url 'tasks:delete' task.pk %}" class="btn btn-danger">Удалить</a>
-  <a href="{% url 'tasks:list' %}" class="btn btn-secondary">Назад</a>
+  <a href="{% url 'tasks:tasks_update' task.pk %}" class="btn btn-warning">Редактировать</a>
+  <a href="{% url 'tasks:tasks_delete' task.pk %}" class="btn btn-danger">Удалить</a>
+  <a href="{% url 'tasks:tasks_list' %}" class="btn btn-secondary">Назад</a>
 {% endblock %}

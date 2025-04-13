@@ -1,31 +1,32 @@
-{% extends 'base.html' %}
-{% block title %}Список статусов{% endblock %}
+{# task_manager/templates/statuses/list.html #}
+{% extends "base.html" %}
+{% block title %}Статусы{% endblock %}
+
 {% block content %}
-  <h1>Статусы</h1>
+  <h2>Статусы</h2>
+  <a class="btn btn-primary my-3" href="{% url 'statuses:status_create' %}">Создать статус</a>
+
   <table class="table table-striped">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Название</th>
-        <th>Действия</th>
+        <th>Имя</th>
+        <th>Дата создания</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       {% for status in statuses %}
-      <tr>
-        <td>{{ status.id }}</td>
-        <td>{{ status.name }}</td>
-        <td>
-          <a href="{% url 'statuses:update' status.pk %}" class="btn btn-sm btn-warning">Редактировать</a>
-          <a href="{% url 'statuses:delete' status.pk %}" class="btn btn-sm btn-danger">Удалить</a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3">Нет статусов</td>
-      </tr>
+        <tr>
+          <td>{{ status.id }}</td>
+          <td>{{ status.name }}</td>
+          <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
+          <td>
+            <a href="{% url 'statuses:status_update' status.id %}">Изменить</a><br>
+            <a href="{% url 'statuses:status_delete' status.id %}">Удалить</a>
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a href="{% url 'statuses:create' %}" class="btn btn-primary">Создать статус</a>
 {% endblock %}
