@@ -60,7 +60,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskForm
     template_name = "tasks/create.html"
-    success_url = reverse_lazy("tasks:list")
+    success_url = reverse_lazy("tasks:tasks_list")
 
     def form_valid(self, form):
         form.instance.author = self.request.user
