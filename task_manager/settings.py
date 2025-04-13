@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
-
 from django.contrib.messages import constants as messages
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -60,19 +60,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "task_manager.wsgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -84,11 +79,11 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
-
 MESSAGE_TAGS = {
     messages.DEBUG: "secondary",
     messages.INFO: "info",
@@ -96,3 +91,11 @@ MESSAGE_TAGS = {
     messages.WARNING: "warning",
     messages.ERROR: "danger",
 }
+
+import rollbar
+
+rollbar.init(
+    os.getenv("ROLLBAR_TOKEN", ""),
+    environment="production" if not DEBUG else "development",
+    root=str(BASE_DIR),
+)
