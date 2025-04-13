@@ -2,9 +2,11 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 
 from .forms import UserForm
 
@@ -81,3 +83,9 @@ class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         messages.info(request, "Вы разлогинены")
         return super().dispatch(request, *args, **kwargs)
+
+
+class CustomLoginView(DjangoLoginView):
+    def form_valid(self, form):
+        messages.success(self.request, "Вы залогинены")
+        return super().form_valid(form)
