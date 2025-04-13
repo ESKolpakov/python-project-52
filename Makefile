@@ -1,41 +1,19 @@
-install:
-	uv pip install --no-cache-dir .
-
-collectstatic:
-	python manage.py collectstatic --noinput
-
-migrate:
-	python manage.py migrate
-
-render-start:
-	gunicorn task_manager.wsgi
-
 build:
 	./build.sh
 
-lint:
-	flake8 .
+install:
+	uv pip install -r requirements.txt
 
-format:
-	black .
+collectstatic:
+	python3 manage.py collectstatic --noinput
 
-lint-isort:
-	isort .
+migrate:
+	python3 manage.py migrate
 
-check-black:
-	black --check .
-
-check-isort:
-	isort --check-only .
-
-check:
-	flake8 . && black --check . && isort --check-only .
+render-start:
+	gunicorn task_manager.wsgi:application --bind 0.0.0.0:8000
 
 setup:
-	python -m pip install --upgrade pip && \
-	uv pip install --no-cache-dir . && \
-	python manage.py migrate && \
-	python manage.py collectstatic --noinput
-
-tests:
-	python manage.py test
+	uv pip install -r requirements.txt && \
+	python3 manage.py migrate && \
+	python3 manage.py collectstatic --noinput
