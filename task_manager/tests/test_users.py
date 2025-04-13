@@ -14,14 +14,14 @@ class UserTestCase(TestCase):
 
     def test_users_list_view(self):
         self.client.force_login(self.user)
-        response = self.client.get(reverse("users:list"))
+        response = self.client.get(reverse("users:users_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "john")
         self.assertContains(response, "jane")
 
     def test_user_registration(self):
         response = self.client.post(
-            reverse("users:create"),
+            reverse("users:users_create"),
             {
                 "username": "new_user",
                 "password1": "Testpass123",

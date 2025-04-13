@@ -1,11 +1,11 @@
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
-from django.contrib.auth.views import LogoutView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LogoutView
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 from .forms import UserForm
 
 
@@ -37,9 +37,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("login")
-        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
         return redirect("users:users_list")
 
     def form_valid(self, form):
@@ -58,10 +62,14 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             # Неавторизованный пользователь
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("login")  # Или reverse_lazy('login')
         # Авторизован, но не владелец профиля
-        messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для удаления другого пользователя."
+        )
         return redirect("users:users_list")
 
     def delete(self, request, *args, **kwargs):

@@ -1,20 +1,21 @@
-from django.urls import reverse_lazy
-from django.views.generic import (
-    ListView,
-    CreateView,
-    DetailView,
-    UpdateView,
-    DeleteView,
-)
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Q
 from django.contrib import messages
-from .models import Task
-from .forms import TaskForm
-from task_manager.statuses.models import Status
-from task_manager.labels.models import Label
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
+
+from task_manager.labels.models import Label
+from task_manager.statuses.models import Status
+
+from .forms import TaskForm
+from .models import Task
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -71,11 +72,11 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
-    template_name = 'tasks/update.html'
-    success_url = reverse_lazy('tasks:tasks_list')
+    template_name = "tasks/update.html"
+    success_url = reverse_lazy("tasks:tasks_list")
 
     def form_valid(self, form):
-        messages.success(self.request, 'Задача успешно обновлена')
+        messages.success(self.request, "Задача успешно обновлена")
         return super().form_valid(form)
 
 
@@ -85,13 +86,12 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy("tasks:tasks_list")
 
     def test_func(self):
-        task = self.get_object()
-        return self.request.user == task.author
+        return self.request.user == self.get_object().author
 
     def handle_no_permission(self):
         messages.error(self.request, "Задачу может удалить только её автор")
         return redirect("tasks:tasks_list")
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         messages.success(self.request, "Задача успешно удалена")
-        return super().delete(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)

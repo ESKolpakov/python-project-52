@@ -1,7 +1,8 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+
 from task_manager.labels.models import Label
-from django.contrib.auth.models import User
 
 
 class LabelTests(TestCase):
@@ -13,14 +14,14 @@ class LabelTests(TestCase):
 
     def test_label_list_view(self):
         self.client.force_login(self.user)
-        response = self.client.get(reverse("labels:list"))
+        response = self.client.get(reverse("labels:labels_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Bug")
 
     def test_create_label(self):
         self.client.force_login(self.user)
         response = self.client.post(
-            reverse("labels:create"), {"name": "Feature"}
+            reverse("labels:labels_create"), {"name": "Feature"}
         )
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Label.objects.filter(name="Feature").exists())
