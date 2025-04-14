@@ -1,3 +1,4 @@
+# task_manager/users/views.py
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -5,7 +6,8 @@ from django.contrib.auth.views import LogoutView, LoginView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from .forms import UserForm
+
+from .forms import UserForm, UserChangeForm
 
 
 class UserListView(ListView):
@@ -18,7 +20,7 @@ class UserCreateView(CreateView):
     model = User
     form_class = UserForm
     template_name = "users/create.html"
-    success_url = reverse_lazy("users:users_list")
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
         messages.success(self.request, "Пользователь успешно зарегистрирован")
@@ -27,7 +29,7 @@ class UserCreateView(CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
-    form_class = UserForm
+    form_class = UserChangeForm
     template_name = "users/update.html"
     success_url = reverse_lazy("users:users_list")
 
@@ -36,13 +38,9 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(
-                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
-            )
-            return redirect("users:login")
-        messages.error(
-            self.request, "У вас нет прав для изменения другого пользователя."
-        )
+            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            return redirect("login")
+        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
         return redirect("users:users_list")
 
     def form_valid(self, form):
@@ -60,13 +58,9 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(
-                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
-            )
-            return redirect("users:login")
-        messages.error(
-            self.request, "У вас нет прав для удаления другого пользователя."
-        )
+            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            return redirect("login")
+        messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
         return redirect("users:users_list")
 
     def delete(self, request, *args, **kwargs):
@@ -82,5 +76,5 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
-        messages.info(self.request, "Вы разлогинены")
+        messages.info(request, "Вы разлогинены")
         return super().dispatch(request, *args, **kwargs)
