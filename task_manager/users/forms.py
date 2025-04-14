@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserChangeForm as DjangoUserChangeForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -54,7 +54,7 @@ class UserForm(UserCreationForm):
         return password
 
 
-class UserChangeForm(UserChangeForm):
+class UserChangeForm(DjangoUserChangeForm):
     password = None  # скрываем поле пароля в форме изменения
 
     class Meta:
