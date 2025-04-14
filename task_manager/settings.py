@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 import dj_database_url
 import rollbar
@@ -84,7 +85,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-LOGIN_URL = "/users/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 

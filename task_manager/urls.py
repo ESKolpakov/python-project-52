@@ -18,7 +18,6 @@ Including another URLconf
 # task_manager/urls.py
 from django.contrib import admin
 from django.urls import include, path
-
 from task_manager.views import index
 from task_manager.users.views import CustomLoginView, CustomLogoutView
 
