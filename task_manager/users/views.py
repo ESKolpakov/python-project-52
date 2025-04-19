@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
@@ -14,16 +15,18 @@ class UserListView(ListView):
     template_name = "users/list.html"
     context_object_name = "users"
 
+#    def get_context_data(self, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        context['request'] = self.request
+#        return context
 
-class UserCreateView(CreateView):
+
+class UserCreateView(SuccessMessageMixin, CreateView):
     model = User
     form_class = UserForm
     template_name = "users/create.html"
     success_url = reverse_lazy("login")
-
-    def form_valid(self, form):
-        messages.success(self.request, "Пользователь успешно зарегистрирован")
-        return super().form_valid(form)
+    success_message = "Пользователь успешно зарегистрирован"
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -31,6 +34,10 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = UserChangeForm
     template_name = "users/update.html"
     success_url = reverse_lazy("users:users_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Пользователь успешно изменён")
+        return super().form_valid(form)
 
     def test_func(self):
         return self.request.user == self.get_object()
@@ -41,10 +48,6 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return redirect("login")
         messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
         return redirect("users:users_list")
-
-    def form_valid(self, form):
-        messages.success(self.request, "Пользователь успешно изменен")
-        return super().form_valid(form)
 
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -62,9 +65,10 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
         return redirect("users:users_list")
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         messages.success(self.request, "Пользователь успешно удалён")
-        return super().delete(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
 
 class CustomLoginView(LoginView):
@@ -75,5 +79,5 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
-        messages.info(request, "Вы разлогинены")
+        messages.info(self.request, "Вы разлогинены")
         return super().dispatch(request, *args, **kwargs)
