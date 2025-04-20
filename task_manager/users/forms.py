@@ -1,5 +1,8 @@
 from django import forms
-from django.contrib.auth.forms import UserChangeForm as DjangoUserChangeForm, UserCreationForm
+from django.contrib.auth.forms import (
+    UserChangeForm as DjangoUserChangeForm,
+    UserCreationForm,
+)
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -83,7 +86,9 @@ class UserChangeForm(DjangoUserChangeForm):
             if password1 != password2:
                 raise ValidationError("Пароли не совпадают.")
             if len(password1) < 3:
-                raise ValidationError("Пароль должен содержать минимум 3 символа.")
+                raise ValidationError(
+                    "Пароль должен содержать минимум 3 символа."
+                )
 
         return cleaned_data
 

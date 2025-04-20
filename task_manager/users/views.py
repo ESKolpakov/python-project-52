@@ -15,6 +15,7 @@ class UserListView(ListView):
     template_name = "users/list.html"
     context_object_name = "users"
 
+
 #    def get_context_data(self, **kwargs):
 #        context = super().get_context_data(**kwargs)
 #        context['request'] = self.request
@@ -44,9 +45,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("login")
-        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
         return redirect("users:users_list")
 
 
@@ -60,9 +65,13 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("login")
-        messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для удаления другого пользователя."
+        )
         return redirect("users:users_list")
 
     def post(self, request, *args, **kwargs):
