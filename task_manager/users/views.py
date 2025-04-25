@@ -37,6 +37,12 @@ class UserUpdateView(SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixi
     success_url = reverse_lazy("users:users_list")
     success_message = "Пользователь успешно изменен"
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, self.success_message)
+        print(">>> FLASH MESSAGE SENT <<<")  # Для отладки в CI
+        return response
+
     def test_func(self):
         return self.request.user == self.get_object()
 
