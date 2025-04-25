@@ -48,7 +48,16 @@
             </div>
           {% endfor %}
         </div>
+        <script>
+          setTimeout(() => {
+            const alertEl = document.querySelector('.alert');
+            if (alertEl) {
+              alertEl.classList.remove('show');
+            }
+          }, 10000);
+        </script>
       {% endif %}
+
 
       {# 👇 Контент страницы #}
       {% block content %}{% endblock %}
