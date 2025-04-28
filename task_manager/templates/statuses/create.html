@@ -7,7 +7,7 @@
     {% csrf_token %}
     <div class="mb-3">
       <label for="id_name" class="form-label">Имя</label>
-      {{ form.name|add_class:"form-control" }}
+      {{ form.name }}
     </div>
     <button type="submit" class="btn btn-primary">Создать</button>
   </form>

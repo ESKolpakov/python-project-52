@@ -7,23 +7,23 @@
     {% csrf_token %}
     <div class="mb-3">
       <label for="id_name" class="form-label">Имя</label>
-      {{ form.name|add_class:"form-control" }}
+      {{ form.name }}
     </div>
     <div class="mb-3">
       <label for="id_description" class="form-label">Описание</label>
-      {{ form.description|add_class:"form-control" }}
-    </div>
-    <div class="mb-3">
-      <label for="id_executor" class="form-label">Исполнитель</label>
-      {{ form.executor|add_class:"form-control" }}
+      {{ form.description }}
     </div>
     <div class="mb-3">
       <label for="id_status" class="form-label">Статус</label>
-      {{ form.status|add_class:"form-control" }}
+      {{ form.status }}
+    </div>
+    <div class="mb-3">
+      <label for="id_executor" class="form-label">Исполнитель</label>
+      {{ form.executor }}
     </div>
     <div class="mb-3">
       <label for="id_labels" class="form-label">Метки</label>
-      {{ form.labels|add_class:"form-control" }}
+      {{ form.labels }}
     </div>
     <button type="submit" class="btn btn-primary">Создать</button>
   </form>
