@@ -1,17 +1,21 @@
-from django.urls import path
+from django import forms
+from .models import Task
 
-from . import views
-
-app_name = "tasks"
-
-urlpatterns = [
-    path("", views.TaskListView.as_view(), name="tasks_list"),
-    path("create/", views.TaskCreateView.as_view(), name="tasks_create"),
-    path("<int:pk>/", views.TaskDetailView.as_view(), name="tasks_detail"),
-    path(
-        "<int:pk>/update/", views.TaskUpdateView.as_view(), name="tasks_update"
-    ),
-    path(
-        "<int:pk>/delete/", views.TaskDeleteView.as_view(), name="tasks_delete"
-    ),
-]
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ["name", "description", "status", "executor", "labels"]
+        labels = {
+            "name": "Имя",
+            "description": "Описание",
+            "status": "Статус",
+            "executor": "Исполнитель",
+            "labels": "Метки",
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'id': 'id_name'}),
+            'description': forms.Textarea(attrs={'id': 'id_description'}),
+            'status': forms.Select(attrs={'id': 'id_status'}),
+            'executor': forms.Select(attrs={'id': 'id_executor'}),
+            'labels': forms.SelectMultiple(attrs={'id': 'id_labels'}),
+        }
