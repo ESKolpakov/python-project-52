@@ -1,5 +1,7 @@
+# task_manager/users/views.py
+
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LogoutView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -17,7 +19,11 @@ class UserListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        messages.get_messages(self.request)
+        # Просто для дебага можно оставить, но НЕ очищаем сообщения
+        print(
+            "DEBUG: Сообщения в get_context_data UserListView:",
+            list(messages.get_messages(self.request)),
+        )
         return context
 
 
@@ -29,57 +35,55 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_message = "Пользователь успешно зарегистрирован"
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(
+    SuccessMessageMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView
+):
     model = User
     form_class = UserChangeForm
     template_name = "users/update.html"
     success_url = reverse_lazy("users:users_list")
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            messages.error(
-                request, "Вы не авторизованы! Пожалуйста, выполните вход."
-            )
-            return redirect("login")
-
-        user = self.get_object()
-        if request.user != user:
-            messages.error(
-                request, "У вас нет прав для изменения другого пользователя."
-            )
-            return redirect("users:users_list")
-
-        return super().dispatch(request, *args, **kwargs)
+    success_message = "Пользователь успешно изменен"
 
     def form_valid(self, form):
-        messages.success(self.request, "Пользователь успешно изменен")
         return super().form_valid(form)
 
+    def test_func(self):
+        return self.request.user == self.get_object()
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            messages.error(
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
+            return redirect("login")
+        messages.error(
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
+        return redirect("users:users_list")
+
+
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = "users/delete.html"
     success_url = reverse_lazy("users:users_list")
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
+    def test_func(self):
+        return self.request.user == self.get_object()
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
             messages.error(
-                request, "Вы не авторизованы! Пожалуйста, выполните вход."
+                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
             )
             return redirect("login")
-
-        user = self.get_object()
-        if request.user != user:
-            messages.error(
-                request, "У вас нет прав для удаления другого пользователя."
-            )
-            return redirect("users:users_list")
-
-        return super().dispatch(request, *args, **kwargs)
+        messages.error(
+            self.request, "У вас нет прав для удаления другого пользователя."
+        )
+        return redirect("users:users_list")
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        messages.success(request, "Пользователь успешно удален")
+        messages.success(self.request, "Пользователь успешно удален")
         return super().post(request, *args, **kwargs)
 
 
