@@ -32,7 +32,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("labels:labels_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Метка успешно обновлена")
+        messages.success(self.request, "Метка успешно изменена")
         return super().form_valid(form)
 
 
