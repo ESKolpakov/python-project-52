@@ -15,10 +15,10 @@ class UserListView(ListView):
     template_name = "users/list.html"
     context_object_name = "users"
 
-#    def get_context_data(self, **kwargs):
-#        context = super().get_context_data(**kwargs)
-#        context['request'] = self.request
-#        return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        messages.get_messages(self.request)
+        return context
 
 
 class UserCreateView(SuccessMessageMixin, CreateView):
@@ -37,12 +37,16 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("login")
 
         user = self.get_object()
         if request.user != user:
-            messages.error(request, "У вас нет прав для изменения другого пользователя.")
+            messages.error(
+                request, "У вас нет прав для изменения другого пользователя."
+            )
             return redirect("users:users_list")
 
         return super().dispatch(request, *args, **kwargs)
@@ -59,12 +63,16 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                request, "Вы не авторизованы! Пожалуйста, выполните вход."
+            )
             return redirect("login")
 
         user = self.get_object()
         if request.user != user:
-            messages.error(request, "У вас нет прав для удаления другого пользователя.")
+            messages.error(
+                request, "У вас нет прав для удаления другого пользователя."
+            )
             return redirect("users:users_list")
 
         return super().dispatch(request, *args, **kwargs)
