@@ -92,7 +92,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if not self.request.user.is_authenticated:
             messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
             return redirect("login")
-        messages.error(self.request, "Задачу может удалить только её автор")
+        messages.error(self.request, "Задачу может удалить только ее автор")
         return redirect("tasks:tasks_list")
 
     def post(self, request, *args, **kwargs):
