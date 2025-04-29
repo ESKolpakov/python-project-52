@@ -77,7 +77,7 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             )
             return redirect("login")
         messages.error(
-            self.request, "У вас нет прав для удаления другого пользователя."
+            self.request, "У вас нет прав для изменения другого пользователя."
         )
         return redirect("users:users_list")
 
