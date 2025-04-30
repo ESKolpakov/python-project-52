@@ -85,7 +85,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-LOCALE_PATHS = [os.path.join(BASE_DIR, 'task_manager', 'locale')]
+LOCALE_PATHS = [os.path.join(BASE_DIR, "task_manager", "locale")]
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

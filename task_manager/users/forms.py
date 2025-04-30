@@ -24,7 +24,8 @@ class UserForm(UserCreationForm):
     username = forms.CharField(
         label=_("Username"),
         help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+            "Required. 150 characters or fewer. "
+            "Letters, digits and @/./+/-/_ only."
         ),
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
@@ -52,7 +53,9 @@ class UserForm(UserCreationForm):
     def clean_password1(self):
         password = self.cleaned_data.get("password1")
         if len(password) < 3:
-            raise ValidationError(_("The password must contain at least 3 characters."))
+            raise ValidationError(
+                _("The password must contain at least 3 characters.")
+            )
         return password
 
 

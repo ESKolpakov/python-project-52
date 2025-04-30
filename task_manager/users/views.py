@@ -18,7 +18,10 @@ class UserListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("DEBUG: Messages in UserListView:", list(messages.get_messages(self.request)))
+        print(
+            "DEBUG: Messages in UserListView:",
+            list(messages.get_messages(self.request)),
+        )
         return context
 
 
@@ -47,9 +50,13 @@ class UserUpdateView(
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, _("You are not authenticated! Please log in."))
+            messages.error(
+                self.request, _("You are not authenticated! Please log in.")
+            )
             return redirect("login")
-        messages.error(self.request, _("You don't have permission to edit another user."))
+        messages.error(
+            self.request, _("You don't have permission to edit another user.")
+        )
         return redirect("users:users_list")
 
 
@@ -63,9 +70,13 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(self.request, _("You are not authenticated! Please log in."))
+            messages.error(
+                self.request, _("You are not authenticated! Please log in.")
+            )
             return redirect("login")
-        messages.error(self.request, _("You don't have permission to delete another user."))
+        messages.error(
+            self.request, _("You don't have permission to delete another user.")
+        )
         return redirect("users:users_list")
 
     def post(self, request, *args, **kwargs):
