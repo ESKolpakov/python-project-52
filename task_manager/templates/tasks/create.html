@@ -2,11 +2,11 @@
 {% load django_bootstrap5 %}
 {% load i18n %}
 
-{% block title %}Создать задачу{% endblock %}
+{% block title %}{% trans "Create task" %}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  <h1 class="my-4">Создать задачу</h1>
+  <h1 class="my-4">{% trans "Create task" %}</h1>
 
   <form method="post">
     {% csrf_token %}
@@ -20,7 +20,7 @@
     {% endif %}
 
     <div class="mb-3">
-      <label for="{{ form.name.id_for_label }}" class="form-label">Имя</label>
+      <label for="{{ form.name.id_for_label }}" class="form-label">{% trans "Name" %}</label>
       {{ form.name }}
       {% if form.name.errors %}
         <div class="invalid-feedback d-block">
@@ -32,7 +32,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="{{ form.description.id_for_label }}" class="form-label">Описание</label>
+      <label for="{{ form.description.id_for_label }}" class="form-label">{% trans "Description" %}</label>
       {{ form.description }}
       {% if form.description.errors %}
         <div class="invalid-feedback d-block">
@@ -44,7 +44,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="{{ form.status.id_for_label }}" class="form-label">Статус</label>
+      <label for="{{ form.status.id_for_label }}" class="form-label">{% trans "Status" %}</label>
       {{ form.status }}
       {% if form.status.errors %}
         <div class="invalid-feedback d-block">
@@ -56,7 +56,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="{{ form.executor.id_for_label }}" class="form-label">Исполнитель</label>
+      <label for="{{ form.executor.id_for_label }}" class="form-label">{% trans "Executor" %}</label>
       {{ form.executor }}
       {% if form.executor.errors %}
         <div class="invalid-feedback d-block">
@@ -68,7 +68,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="{{ form.labels.id_for_label }}" class="form-label">Метки</label>
+      <label for="{{ form.labels.id_for_label }}" class="form-label">{% trans "Labels" %}</label>
       {{ form.labels }}
       {% if form.labels.errors %}
         <div class="invalid-feedback d-block">
@@ -78,10 +78,10 @@
         </div>
       {% endif %}
       <br>
-      <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких меток</small>
+      <small class="form-text text-muted">{% trans "Hold Ctrl to select multiple labels" %}</small>
     </div>
 
-    <button type="submit" class="btn btn-primary">Создать</button>
+    <button type="submit" class="btn btn-primary">{% trans "Create" %}</button>
   </form>
 </div>
 {% endblock %}

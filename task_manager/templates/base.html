@@ -1,36 +1,36 @@
-{% load django_bootstrap5 %}
+{% load django_bootstrap5 i18n %}
 <!DOCTYPE html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Менеджер задач{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'index' %}">Менеджер задач</a>
+        <a class="navbar-brand" href="{% url 'index' %}">{% trans "Task Manager" %}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:users_list' %}">Пользователи</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:users_list' %}">{% trans "Users" %}</a></li>
             {% if user.is_authenticated %}
-              <li class="nav-item"><a class="nav-link" href="{% url 'statuses:statuses_list' %}">Статусы</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'labels:labels_list' %}">Метки</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'tasks:tasks_list' %}">Задачи</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'statuses:statuses_list' %}">{% trans "Statuses" %}</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'labels:labels_list' %}">{% trans "Labels" %}</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'tasks:tasks_list' %}">{% trans "Tasks" %}</a></li>
               <li class="nav-item">
                 <form method="post" action="{% url 'logout' %}" class="d-inline">
                   {% csrf_token %}
-                  <button class="nav-link btn btn-link" type="submit">Выход</button>
+                  <button class="nav-link btn btn-link" type="submit">{% trans "Logout" %}</button>
                 </form>
               </li>
             {% else %}
-              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'users:users_create' %}">Регистрация</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Login" %}</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'users:users_create' %}">{% trans "Sign up" %}</a></li>
             {% endif %}
           </ul>
         </div>
@@ -38,19 +38,17 @@
     </nav>
 
     <div class="container mt-3">
-
       {% if messages %}
         <div class="mt-3">
           {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="transition: none;">
               <span class="alert-message">{{ message }}</span>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
             </div>
           {% endfor %}
         </div>
       {% endif %}
 
-      {# 👇 Контент страницы #}
       {% block content %}{% endblock %}
     </div>
   </body>

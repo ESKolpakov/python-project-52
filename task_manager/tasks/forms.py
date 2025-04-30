@@ -1,14 +1,16 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+
 from .models import Task
 
 
 class TaskForm(forms.ModelForm):
     executor = forms.ModelChoiceField(
         queryset=User.objects.all(),
-        label="Исполнитель",
+        label=_("Executor"),
         required=False,
-        empty_label="---------",
+        empty_label=_("---------"),
         to_field_name="id",
     )
 
@@ -16,11 +18,11 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ["name", "description", "status", "executor", "labels"]
         labels = {
-            "name": "Имя",
-            "description": "Описание",
-            "status": "Статус",
-            "executor": "Исполнитель",
-            "labels": "Метки",
+            "name": _("Name"),
+            "description": _("Description"),
+            "status": _("Status"),
+            "executor": _("Executor"),
+            "labels": _("Labels"),
         }
         widgets = {
             "description": forms.Textarea(attrs={"rows": 3}),

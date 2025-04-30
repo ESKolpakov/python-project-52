@@ -1,4 +1,5 @@
 import django_filters
+from django.utils.translation import gettext_lazy as _
 
 from .models import Task
 
@@ -8,7 +9,7 @@ class TaskFilter(django_filters.FilterSet):
     executor = django_filters.NumberFilter(field_name="executor__id")
     label = django_filters.NumberFilter(method="filter_by_label")
     self_tasks = django_filters.BooleanFilter(
-        method="filter_self_tasks", label="Только мои задачи"
+        method="filter_self_tasks", label=_("Only my tasks")
     )
 
     class Meta:

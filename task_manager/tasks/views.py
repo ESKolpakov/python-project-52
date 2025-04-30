@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -13,7 +14,6 @@ from django.views.generic import (
 
 from task_manager.labels.models import Label
 from task_manager.statuses.models import Status
-
 from .forms import TaskForm
 from .models import Task
 
@@ -65,7 +65,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, "Задача успешно создана")
+        messages.success(self.request, _("Task was successfully created"))
         return super().form_valid(form)
 
 
@@ -76,7 +76,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("tasks:tasks_list")
 
     def form_valid(self, form):
-        messages.success(self.request, "Задача успешно изменена")
+        messages.success(self.request, _("Task was successfully updated"))
         return super().form_valid(form)
 
 
@@ -90,13 +90,11 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
-            messages.error(
-                self.request, "Вы не авторизованы! Пожалуйста, выполните вход."
-            )
+            messages.error(self.request, _("You are not authenticated! Please log in."))
             return redirect("login")
-        messages.error(self.request, "Задачу может удалить только ее автор")
+        messages.error(self.request, _("Only the author can delete a task."))
         return redirect("tasks:tasks_list")
 
     def post(self, request, *args, **kwargs):
-        messages.success(self.request, "Задача успешно удалена")
+        messages.success(self.request, _("Task was successfully deleted"))
         return super().post(request, *args, **kwargs)

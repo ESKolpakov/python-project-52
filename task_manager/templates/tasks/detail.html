@@ -1,36 +1,43 @@
 {% extends 'base.html' %}
-{% block title %}Детали задачи{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Task details" %}{% endblock %}
 
 {% block content %}
-  <h1>Детали задачи</h1>
+  <h1>{% trans "Task details" %}</h1>
 
   <h3>{{ task.name }}</h3>
 
   {% if task.description %}
-    <p><strong>Описание:</strong> {{ task.description }}</p>
+    <p><strong>{% trans "Description:" %}</strong> {{ task.description }}</p>
   {% endif %}
 
   {% if task.author %}
-    <p><strong>Автор:</strong> {{ task.author.get_full_name }}</p>
+    <p><strong>{% trans "Author:" %}</strong> {{ task.author.get_full_name }}</p>
   {% endif %}
 
   {% if task.executor %}
-    <p><strong>Исполнитель:</strong> {{ task.executor.get_full_name }}</p>
+    <p><strong>{% trans "Executor:" %}</strong> {{ task.executor.get_full_name }}</p>
   {% endif %}
 
   {% if task.status %}
-    <p><strong>Статус:</strong> {{ task.status.name }}</p>
+    <p><strong>{% trans "Status:" %}</strong> {{ task.status.name }}</p>
   {% endif %}
 
   {% if task.labels.exists %}
-    <p><strong>Метки:</strong>
+    <p><strong>{% trans "Labels:" %}</strong>
       {% for label in task.labels.all %}
         {{ label.name }}{% if not forloop.last %}, {% endif %}
       {% endfor %}
     </p>
   {% endif %}
 
-  <a href="{% url 'tasks:tasks_update' task.pk %}" class="btn btn-warning">Редактировать</a>
-  <a href="{% url 'tasks:tasks_delete' task.pk %}" class="btn btn-danger">Удалить</a>
-  <a href="{% url 'tasks:tasks_list' %}" class="btn btn-secondary">Назад</a>
+  <a href="{% url 'tasks:tasks_update' task.pk %}" class="btn btn-warning">
+    {% trans "Edit" %}
+  </a>
+  <a href="{% url 'tasks:tasks_delete' task.pk %}" class="btn btn-danger">
+    {% trans "Delete" %}
+  </a>
+  <a href="{% url 'tasks:tasks_list' %}" class="btn btn-secondary">
+    {% trans "Back" %}
+  </a>
 {% endblock %}

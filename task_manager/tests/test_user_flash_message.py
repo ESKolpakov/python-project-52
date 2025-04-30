@@ -29,4 +29,4 @@ class UserFlashMessageTest(TestCase):
         messages = list(get_messages(response.wsgi_request))
         message_texts = [str(m) for m in messages]
 
-        self.assertIn("Пользователь успешно изменён", message_texts)
+        self.assertIn("Пользователь успешно изменен", message_texts)
