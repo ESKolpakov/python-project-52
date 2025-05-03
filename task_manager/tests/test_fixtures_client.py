@@ -91,8 +91,8 @@ class FixtureClientTests(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Метка успешно обновлена")
-        self.assertFlashMessage(response, "Метка успешно обновлена")
+        self.assertContains(response, "Метка успешно изменена")
+        self.assertFlashMessage(response, "Метка успешно изменена")
 
     def test_delete_status(self):
         from task_manager.statuses.models import Status
@@ -102,5 +102,5 @@ class FixtureClientTests(TestCase):
             reverse("statuses:status_delete", args=[status.id]), follow=True
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Статус успешно удалён")
-        self.assertFlashMessage(response, "Статус успешно удалён")
+        self.assertContains(response, "Статус успешно удален")
+        self.assertFlashMessage(response, "Статус успешно удален")

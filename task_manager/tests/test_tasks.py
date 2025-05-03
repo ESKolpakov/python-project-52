@@ -52,7 +52,7 @@ class TaskTests(TestCase):
             reverse("tasks:tasks_delete", args=[self.task.pk]), follow=True
         )
         self.assertRedirects(response, reverse("tasks:tasks_list"))
-        self.assertContains(response, "Задачу может удалить только её автор")
+        self.assertContains(response, "Задачу может удалить только ее автор")
 
     def test_any_user_can_update_task(self):
         self.client.force_login(self.other)
