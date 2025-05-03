@@ -8,7 +8,6 @@
 [![Reliability](https://sonarcloud.io/api/project_badges/measure?project=ESKolpakov_python-project-52&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ESKolpakov_python-project-52)
 
 
-
 Проект "Менеджер задач" — веб-приложение для управления задачами с авторизацией, статусами, метками и фильтрацией.
 
 ## Демо
