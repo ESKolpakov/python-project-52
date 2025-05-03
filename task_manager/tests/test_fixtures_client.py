@@ -11,7 +11,6 @@ BASE_FIXTURE_PATH = Path(__file__).resolve().parent.parent / "fixtures"
 
 class FixtureClientTests(TestCase):
     def setUp(self):
-        self.client = self.client
 
         # Регистрация пользователей
         with open(BASE_FIXTURE_PATH / "users.json") as f:
