@@ -18,3 +18,6 @@ setup:
 
 tests:
 	python3 manage.py test
+
+coverage:
+	coverage run manage.py test && coverage xml
